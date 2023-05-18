@@ -1,6 +1,7 @@
 #include <mqtt.h>
 
-void MQTT::iniciar(char *ssid, char *pass){
+void MQTT::iniciar(const char *ssid, const char *pass)
+{
     WiFi.begin(ssid, pass);
     while (WiFi.status() != WL_CONNECTED)
     {
@@ -13,10 +14,11 @@ void MQTT::iniciar(char *ssid, char *pass){
     Serial.println(WiFi.localIP());
 };
 
-void MQTT::iniciar_broker(char *server, u_int port, char *user, char *pass){
+void MQTT::iniciar_broker(const char *server, const u_int port, const char *user, const char *pass)
+{
     WiFiClient wiFiClient;
     this->clientMqtt = PubSubClient(wiFiClient);
-    
+
     clientMqtt.setServer(server, port);
 
     while (!clientMqtt.connected())
@@ -48,18 +50,22 @@ void MQTT::iniciar_broker(char *server, u_int port, char *user, char *pass){
     }
 }
 
-void MQTT::set_callback(MQTT_CALLBACK_SIGNATURE){
+void MQTT::set_callback(MQTT_CALLBACK_SIGNATURE)
+{
     this->clientMqtt.setCallback(callback);
 }
 
-void MQTT::publish(char* topic, char* payload){
-    this->clientMqtt.publish(topic, payload);
+boolean MQTT::publish(const char *topic, const char *payload)
+{
+    return this->clientMqtt.publish(topic, payload);
 }
 
-void MQTT::subscribe(char * topic){
-    this->clientMqtt.subscribe(topic);
+boolean MQTT::subscribe(const char *topic)
+{
+    return this->clientMqtt.subscribe(topic);
 }
 
-void MQTT::loop(){
-    this->clientMqtt.loop();
+boolean MQTT::loop()
+{
+    return this->clientMqtt.loop();
 }

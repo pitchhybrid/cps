@@ -1,16 +1,36 @@
-#include <Arduino.h>
-#include <mqtt.h>
-#include <trava.h>
-#include <display.h>
-#include <rfid.h>
+#include <main.h>
 
-void setup() {
-  MQTT mqtt;
-  Trava trava(0);
-  Display display(0x27, 16, 2);
-  RFID rfid(0,0);
+const char *topic = "";
+
+MQTT mqtt;
+Trava trava(PINO_TRAVA);
+Tone buzzer(PINO_BUZZER);
+Display display(LCD, ROWS, COLS);
+RFID rfid(SS, RST);
+
+void setup()
+{
+  // INICIAR OS COMPONENTES
+  mqtt.iniciar(ssid, password);
+  mqtt.iniciar_broker(mqttServer, mqttPort, mqttUser, mqttPassword);
+  trava.iniciar();
+  display.iniciar();
+  rfid.iniciar();
+
+  // SUBSCRIBE TOPIC
+  mqtt.set_callback(callback);
+  mqtt.subscribe(topic);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+  
+  mqtt.loop();
+
+  rfid.aguardar_cartao();
+  String id = rfid.ler_id();
+}
+
+void callback(char *topic, byte *payload, unsigned int length){
+
 }

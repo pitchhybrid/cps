@@ -1,32 +1,35 @@
 #include "rfid.h"
 
-RFID::RFID(u_int ss, u_int rst){
-    mfrc522 = new MFRC522(ss,rst);
-}
-
-void RFID::iniciar(){
+void RFID::iniciar()
+{
     SPI.begin();
     mfrc522->PCD_Init();
 }
 
-void RFID::aguardar_cartao(){
-    while (!mfrc522->PICC_IsNewCardPresent());
+void RFID::aguardar_cartao()
+{
+    while (!mfrc522->PICC_IsNewCardPresent())
+        ;
 }
 
-String RFID::ler_id(){
+String RFID::ler_id()
+{
     String content = "";
-    if(!mfrc522->PICC_ReadCardSerial()){
+    if (!mfrc522->PICC_ReadCardSerial())
+    {
         return content;
     }
-    for (byte i = 0; i< mfrc522->uid.size; i++){
+    for (byte i = 0; i < mfrc522->uid.size; i++)
+    {
         content.concat(String(mfrc522->uid.uidByte[i] < HEX ? " 0" : " "));
         content.concat(String(mfrc522->uid.uidByte[i], HEX));
     }
     return content.isEmpty() ? content : content.substring(1);
 }
 
-String RFID::ler_dados(byte bloco){
-    
+String RFID::ler_dados(byte bloco)
+{
+
     MFRC522::StatusCode status;
 
     mfrc522->PICC_DumpDetailsToSerial(&(mfrc522->uid)); // Imprime os detalhes tecnicos do cartão/tag
@@ -48,7 +51,7 @@ String RFID::ler_dados(byte bloco){
 
         Serial.print("Falha na Autenticação: ");
         Serial.println(mfrc522->GetStatusCodeName(status));
-        return;
+        return "";
     }
 
     // Caso autenticação for sucesso, faz a leitura dos dados do bloco
@@ -58,16 +61,17 @@ String RFID::ler_dados(byte bloco){
 
         Serial.print("Leitura Falhou: ");
         Serial.println(mfrc522->GetStatusCodeName(status));
-        return;
+        return "";
     }
-    return String((char *) buffer);
+    return String((char *)buffer);
 }
 
-void RFID::escrever_dados(byte bloco){
+void RFID::escrever_dados(byte bloco)
+{
     MFRC522::StatusCode status;
 
     mfrc522->PICC_DumpDetailsToSerial(&(mfrc522->uid)); // Imprime os detalhes tecnicos do cartão/tag
-    Serial.setTimeout(20000L);                        // Pode-se esperar até 20 segundos para entrar os dados
+    Serial.setTimeout(20000L);                          // Pode-se esperar até 20 segundos para entrar os dados
 
     Serial.println(F("Insira os dados a serem gravados com o caractere '#' ao final (máximo de 16 caracteres):"));
 
@@ -117,6 +121,5 @@ void RFID::escrever_dados(byte bloco){
     else
     {
         Serial.println(F("Escrita bem sucedida"));
-
     }
 }

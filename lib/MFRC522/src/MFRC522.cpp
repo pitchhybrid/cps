@@ -1299,8 +1299,8 @@ MFRC522::StatusCode MFRC522::PCD_MIFARE_Transceive(	byte *sendData,		///< Pointe
  */
 const __FlashStringHelper *MFRC522::GetStatusCodeName(MFRC522::StatusCode code	///< One of the StatusCode enums.
 										) {
-#define FPSTR(pstr_pointer) (reinterpret_cast<const __FlashStringHelper *>(pstr_pointer))
-#define F(string_literal) (FPSTR(PSTR(string_literal)))
+// #define FPSTR(pstr_pointer) (reinterpret_cast<const __FlashStringHelper *>(pstr_pointer))
+// #define F(string_literal) (FPSTR(PSTR(string_literal)))
 	switch (code) {
 		case STATUS_OK:				return F("Success.");
 		case STATUS_ERROR:			return F("Error in communication.");
@@ -1349,8 +1349,8 @@ MFRC522::PICC_Type MFRC522::PICC_GetType(byte sak		///< The SAK byte returned fr
  */
 const __FlashStringHelper *MFRC522::PICC_GetTypeName(PICC_Type piccType	///< One of the PICC_Type enums.
 													) {
-#define FPSTR(pstr_pointer) (reinterpret_cast<const __FlashStringHelper *>(pstr_pointer))
-#define F(string_literal) (FPSTR(PSTR(string_literal)))
+// #define FPSTR(pstr_pointer) (reinterpret_cast<const __FlashStringHelper *>(pstr_pointer))
+// #define F(string_literal) (FPSTR(PSTR(string_literal)))
 	switch (piccType) {
 		case PICC_TYPE_ISO_14443_4:		return F("PICC compliant with ISO/IEC 14443-4");
 		case PICC_TYPE_ISO_18092:		return F("PICC compliant with ISO/IEC 18092 (NFC)");

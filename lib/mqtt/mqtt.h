@@ -8,18 +8,19 @@
 
 #pragma once
 
-class MQTT: public Component {
-    private:
-        PubSubClient clientMqtt;
+class MQTT : public Component
+{
+private:
+    PubSubClient clientMqtt;
 
-    public:
-        void iniciar(){};
-        void iniciar(char *ssid, char *pass);
-        void iniciar_broker(char * server, u_int port, char *user, char* pass);
-        void set_callback(MQTT_CALLBACK_SIGNATURE);
-        void publish(char * topic, char* payload);
-        void subscribe(char * topic);
-        void loop();
+public:
+    void iniciar(){};
+    void iniciar(const char *ssid, const char *pass);
+    void iniciar_broker(const char *server, const u_int port, const char *user, const char *pass);
+    void set_callback(MQTT_CALLBACK_SIGNATURE);
+    boolean publish(const char *topic, const char *payload);
+    boolean subscribe(const char *topic);
+    boolean loop();
 };
 
 #endif
