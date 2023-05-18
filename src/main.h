@@ -4,6 +4,10 @@
 #include <display.h>
 #include <rfid.h>
 #include <tone.h>
+
+#include <set>
+#include <vector>
+
 /* CONFIGURAÇÕES DO WIFI */
 const char *ssid = "nome_da_rede";      // Nome da rede WiFi
 const char *password = "senha_secreta"; // Senha da rede WiFi
@@ -30,3 +34,4 @@ const char *mqttPassword = "";                // Senha MQTT
 #define PINO_BUZZER 0
 
 void callback(char *topic, byte *payload, unsigned int length);
+std::vector<std::string> split(std::string s, std::string delimiter);

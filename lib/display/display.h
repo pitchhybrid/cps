@@ -25,7 +25,7 @@ public:
 
     void iniciar();
     void setCursor(u_int c, u_int l);
-    void print(char *txt);
+    void print(const char *txt);
     void home();
     void display();
     void noDisplay();

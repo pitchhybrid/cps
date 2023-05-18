@@ -12,7 +12,7 @@ void Display::setCursor(u_int c, u_int l)
     lcd->setCursor(c, l);
 };
 
-void Display::print(char *txt)
+void Display::print(const char *txt)
 {
     lcd->print(txt);
 };
