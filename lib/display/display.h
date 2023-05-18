@@ -5,7 +5,8 @@
 #include <component.h>
 
 #pragma once
-
+#define LEFT 1
+#define RIGHT 2
 class Display:Component{
     
     private:
@@ -20,6 +21,12 @@ class Display:Component{
     }
 
     void iniciar();
+    void setCursor(u_int c, u_int l);
+    void print(char * txt);
+    void home();
+    void display();
+    void noDisplay();
+    void scroll(u_int d);
 };
 
 #endif
