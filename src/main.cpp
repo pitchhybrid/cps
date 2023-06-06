@@ -157,6 +157,7 @@ String listenerKeys(){
 
 void loop()
 {
+  display.iniciar();
   trava.travar();
   clientMqtt.loop();
 
