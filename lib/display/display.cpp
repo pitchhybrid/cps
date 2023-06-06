@@ -34,6 +34,10 @@ void Display::noDisplay()
     lcd->noDisplay();
 };
 
+void Display::clear() {
+    lcd->clear();
+}
+
 void Display::testDisplay(){
     lcd->noBacklight();
     delay(1000);
