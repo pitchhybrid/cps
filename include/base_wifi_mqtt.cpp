@@ -25,7 +25,7 @@ void setup()
     pinMode(led, OUTPUT);
     pinMode(potenciometro, INPUT);
 
-    Serial.begin(9600);         // Configura a porta serial
+    Serial.begin(115200);         // Configura a porta serial
     WiFi.begin(ssid, password); // Configura o WiFi
 
     while (WiFi.status() != WL_CONNECTED)

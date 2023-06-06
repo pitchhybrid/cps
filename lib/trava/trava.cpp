@@ -3,20 +3,20 @@
 
 void Trava::iniciar()
 {
-    Component::iniciar(INPUT_PULLUP, false);
-    estado = digitalRead(pin);
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, HIGH);
 };
 
 bool Trava::liberar()
 {
-    digitalWrite(pin, HIGH);
+    digitalWrite(pin, LOW);
     estado = digitalRead(pin);
     return estado;
 };
 
 bool Trava::travar()
 {
-    digitalWrite(pin, LOW);
+    digitalWrite(pin, HIGH);
     estado = digitalRead(pin);
     return estado;
 };

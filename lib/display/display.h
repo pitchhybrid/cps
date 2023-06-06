@@ -30,6 +30,7 @@ public:
     void display();
     void noDisplay();
     void scroll(u_int d);
+    void testDisplay();
 };
 
 #endif

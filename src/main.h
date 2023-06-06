@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <mqtt.h>
 #include <trava.h>
 #include <display.h>
 #include <rfid.h>
@@ -9,8 +8,8 @@
 #include <vector>
 
 /* CONFIGURAÇÕES DO WIFI */
-const char *ssid = "nome_da_rede";      // Nome da rede WiFi
-const char *password = "senha_secreta"; // Senha da rede WiFi
+const char *ssid = "Denise";      // Nome da rede WiFi
+const char *password = "88208794"; // Senha da rede WiFi
 
 /* CONFIGURAÇÕES DO MQTT*/
 const char *mqttServer = "broker.hivemq.com"; // Endereço do Broker MQTT
@@ -24,14 +23,13 @@ const char *mqttPassword = "";                // Senha MQTT
 #define ROWS 2   // LINHAS
 
 // RFID
-#define SS 0  // PINO SS
-#define RST 0 // PINO RST
+#define SS 5  // PINO SS
+#define RST 27 // PINO RST
 
 // TRAVA
-#define PINO_TRAVA 0
+#define PINO_TRAVA 16
 
 // BUZZER
-#define PINO_BUZZER 0
+#define PINO_BUZZER 17
 
-void callback(char *topic, byte *payload, unsigned int length);
 std::vector<std::string> split(std::string s, std::string delimiter);

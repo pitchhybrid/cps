@@ -6,10 +6,9 @@ void RFID::iniciar()
     mfrc522->PCD_Init();
 }
 
-void RFID::aguardar_cartao()
+bool RFID::aguardar_cartao()
 {
-    while (!mfrc522->PICC_IsNewCardPresent())
-        ;
+    return mfrc522->PICC_IsNewCardPresent();
 }
 
 String RFID::ler_id()

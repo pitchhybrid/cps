@@ -1,86 +1,115 @@
 #include <main.h>
-
-
-const char *topic = "";
+#include <WiFi.h>
+#include <PubSubClient.h>
 
 std::set<std::string> cartoes;
-
-MQTT mqtt;
 Trava trava(PINO_TRAVA);
 Tone buzzer(PINO_BUZZER);
 Display display(LCD, ROWS, COLS);
 RFID rfid(SS, RST);
 
+WiFiClient espClient;        
+PubSubClient clientMqtt(espClient);
+
+void callback(char *topic, byte *payload, unsigned int length);
+
+void configureMqtt() {
+  clientMqtt.setServer(mqttServer, mqttPort);
+
+  while (!clientMqtt.connected())
+  {
+    Serial.println("Conectando ao Broker MQTT...");
+
+    String clientId = "ESP32Client_" + String(random(0xffff), HEX);
+    Serial.println("clientId = " + clientId);
+
+    if (clientMqtt.connect(clientId.c_str(), mqttUser, mqttPassword))
+    {
+      Serial.println("O cliente " + clientId + " foi conectado com sucesso");
+
+      clientMqtt.setCallback(callback);
+
+      bool isSub = clientMqtt.subscribe("esp32/input");
+      Serial.print("subscrieb ");
+      Serial.println(isSub);
+    }
+    else
+    {
+      int clientState = clientMqtt.state();
+
+      Serial.print("Falha ao se conectar. ");
+      Serial.println("Estado do cliente: " + (String)clientState);
+
+      delay(2000);
+    }
+  }  
+}
+
+void connectToWifi() {
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print("Tentando se conectar na rede: ");
+    Serial.println(ssid);
+  }
+
+  Serial.println("Conectado na Rede WiFi.");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  configureMqtt();
+}
+
 void setup()
 {
-  // INICIAR OS COMPONENTES
-  mqtt.iniciar(ssid, password);
-  mqtt.iniciar_broker(mqttServer, mqttPort, mqttUser, mqttPassword);
+  Serial.begin(115200);
+
+  rfid.iniciar();
   trava.iniciar();
   display.iniciar();
-  rfid.iniciar();
-
-  // SUBSCRIBE TOPIC
-  mqtt.set_callback(callback);
-  mqtt.subscribe(topic);
-
+  connectToWifi();
 }
 
 void loop()
 {
-    
-  mqtt.loop();
+  trava.travar();
+  clientMqtt.loop();
+  
+  bool isCardPresent = rfid.aguardar_cartao();
+  if(!isCardPresent) return;
 
-  rfid.aguardar_cartao();
-  String id = rfid.ler_id(); /*ID do cartão*/
+  String id = rfid.ler_id();
+  Serial.println(id);
 
-  if (cartoes.find((std::string) id.c_str()) != cartoes.end())
-  {
-    trava.liberar();
-    buzzer._tone(1000, 1000);
-    mqtt.publish("" /* TOPICO */ , id.c_str());
-    display.home();
-    display.print("TRAVA LIBERADA");
-    Serial.println("TRAVA LIBERADA");
-  }
-  else
-  {
-    trava.travar();
-    buzzer._tone(1000, 500);
-    buzzer._tone(1000, 500);
-
-    display.home();
-    display.print("NEGADO");
-    Serial.println("TRAVA NEGADA");
-  }
+  bool status = clientMqtt.publish("esp32/output", id.c_str());
+  Serial.println(status ? "enviado com sucesso" : "falha ao enviar");
+  delay(1000);
 }
+
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
-  Serial.print("Uma mensagem chegou no tópico: ");
-  Serial.println(topic);
-
-  Serial.print("Payload: ");
-  Serial.println((char *)payload);
-  std::vector<std::string> ids = split(((std::string)((char *)payload)), "|");
-  for(std::string str: ids){
-    cartoes.insert(str);
-  }
-}
-
-std::vector<std::string> split(std::string s, std::string delimiter)
-{
-  size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-  std::string token;
-  std::vector<std::string> res;
-
-  while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos)
+  byte text = payload[0];
+  char access = (char) text == '1';
+  if (access)
   {
-    token = s.substr(pos_start, pos_end - pos_start);
-    pos_start = pos_end + delim_len;
-    res.push_back(token);
+    display.print("ACESSO LIBERADO");
+    trava.liberar();
+
+    buzzer._tone(1000, 500);
+    delay(2000);
+  }
+  else
+  {
+    display.print("ACESSO NEGADO");
+
+    buzzer._tone(1000, 400);
+    delay(500);
+    buzzer._tone(1000, 400);
+    delay(1000);
   }
 
-  res.push_back(s.substr(pos_start));
-  return res;
+  display.iniciar();
 }

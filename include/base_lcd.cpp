@@ -19,7 +19,7 @@ byte smile[8] = {
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     lcd.init();
     lcd.backlight();

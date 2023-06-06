@@ -22,7 +22,7 @@ void escrever_dados(byte bloco);
 void setup()
 {
 
-    Serial.begin(9600); // Configura a porta serial
+    Serial.begin(115200); // Configura a porta serial
     SPI.begin();        // Configura a comunicação SPI
     mfrc522.PCD_Init(); // Configura o modulo MFRC522
 

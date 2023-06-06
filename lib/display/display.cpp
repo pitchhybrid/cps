@@ -5,6 +5,7 @@ void Display::iniciar()
     lcd->init();
     lcd->backlight();
     lcd->home();
+    lcd->print("Aproxime o cartão");
 };
 
 void Display::setCursor(u_int c, u_int l)
@@ -14,6 +15,7 @@ void Display::setCursor(u_int c, u_int l)
 
 void Display::print(const char *txt)
 {
+    lcd->clear();
     lcd->print(txt);
 };
 
@@ -31,6 +33,15 @@ void Display::noDisplay()
 {
     lcd->noDisplay();
 };
+
+void Display::testDisplay(){
+    lcd->noBacklight();
+    delay(1000);
+    lcd->backlight();
+    lcd->print("TESTANDO LCD");
+    delay(1000);
+    lcd->clear();
+}
 
 void Display::scroll(u_int d)
 {

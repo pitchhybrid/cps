@@ -22,7 +22,7 @@ public:
         mfrc522 = new MFRC522(ss, rst);
     };
     void iniciar();
-    void aguardar_cartao();
+    bool aguardar_cartao();
     String ler_id();
     String ler_dados(byte bloco);
     void escrever_dados(byte bloco);
